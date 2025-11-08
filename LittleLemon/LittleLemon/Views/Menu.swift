@@ -12,6 +12,8 @@ struct Menu: View {
     
     @Environment(\.managedObjectContext) private var viewContext
     
+    @State private var searchText = ""
+    
     var body: some View {
         VStack(alignment: .leading) {
             Spacer()
@@ -25,7 +27,12 @@ struct Menu: View {
             Text("The Little Lemon Foor Ordering App!")
                 .padding(.horizontal)
             
-            FetchedObjects(predicate: NSPredicate(value: true)) { (dishes: [Dish]) in
+            TextField("Search menu", text: $searchText)
+            
+            FetchedObjects(
+                predicate: buildPredicate(),
+                sortDescriptors: buildSortDescriptor()
+            ) { (dishes: [Dish]) in
                 List {
                     ForEach(dishes) { dish in
                         HStack {
@@ -84,13 +91,31 @@ struct Menu: View {
                             dish.price = item.price
                         }
                         
-                        // Guardamos los cambios en Core Data
                         try? viewContext.save()
                     }
                 }
             }
         }
         task.resume()
+    }
+    
+    func buildSortDescriptor() -> [NSSortDescriptor] {
+        return [
+            NSSortDescriptor(key: "title", ascending: true,selector: #selector(NSString.localizedStandardCompare))
+            
+        ]
+            
+        
+    }
+    func buildPredicate() -> NSPredicate {
+        
+        if searchText.isEmpty {
+            return NSPredicate(value: true)
+        }
+        else{
+            return NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+        }
+        
     }
 }
 
