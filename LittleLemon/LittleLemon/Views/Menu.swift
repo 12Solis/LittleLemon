@@ -11,20 +11,75 @@ import CoreData
 struct Menu: View {
     
     @Environment(\.managedObjectContext) private var viewContext
+    let persistence = PersistenceController.shared
     
     @State private var searchText = ""
     @State private var isSearchActive = false
+    @State private var selection = "Starters"
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
+            VStack {
                 Spacer()
                 
                 
-                LittleLemonMessageView(isSearching:$isSearchActive)
+                ZStack(alignment: .bottomLeading) {
+                    LittleLemonMessageView()
+                    ZStack {
+                        if isSearchActive {
+                            HStack {
+                                TextField("Search menu", text: $searchText)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .padding(.trailing, 60)
+                                        
+                                Button {
+                                    isSearchActive = false
+                                    searchText = ""
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .transition(.scale.combined(with: .opacity))
+                        } else {
+                            Button {
+                                withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                    isSearchActive = true
+                                }
+                            } label: {
+                                Image(systemName: "magnifyingglass.circle.fill")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundStyle(.text)
+                            }
+                            .transition(.scale.combined(with: .opacity))
+                        }
+                    }
+                    .padding()
+                }
                 
-                
-                TextField("Search menu", text: $searchText)
+                HStack {
+                    Text("ORDER FOR DELIVERY!")
+                        .font(.title2)
+                        .bold()
+                        .padding(.horizontal,10)
+                        .padding(.top)
+                    Spacer()
+                }
+                ScrollView(.horizontal){
+                    HStack {
+                        CategoryButtonView(product: "Starters", selectedProduct: $selection)
+                            .padding(.vertical)
+                            .padding(.leading,5)
+                        CategoryButtonView(product: "Mains", selectedProduct: $selection)
+                            .padding(.vertical)
+                        CategoryButtonView(product: "Desserts", selectedProduct: $selection)
+                            .padding(.vertical)
+                        CategoryButtonView(product: "Drinks", selectedProduct: $selection)
+                            .padding(.vertical)
+                        
+                    }
+                }
                 
                 FetchedObjects(
                     predicate: buildPredicate(),
@@ -37,6 +92,8 @@ struct Menu: View {
                                     .font(.body)
                                     .lineLimit(1)
                                     .padding(.trailing, 8)
+                                
+                                Spacer()
                                 
                                 AsyncImage(url: URL(string: dish.image ?? "")) { image in
                                     image
@@ -55,6 +112,8 @@ struct Menu: View {
                     .scrollContentBackground(.hidden)
                 }
             }
+            .environment(\.managedObjectContext, persistence.container.viewContext)
+            .navigationBarBackButtonHidden(true)
             .onAppear(){
                 getMenuData()
             }
@@ -68,12 +127,13 @@ struct Menu: View {
                 }
                 ToolbarItem(placement: .topBarTrailing){
                     NavigationLink(destination: UserProfile()) {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .frame(width: 28, height: 28)
+                        ProfilePicView()
+                            .scaledToFill()
+                            .frame(width: 40, height: 40)
                     }
                 }
             }
+            
         }
     }
     

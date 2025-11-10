@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct LittleLemonMessageView: View {
-    @Binding var isSearching: Bool
     
     var body: some View {
-        ZStack(alignment: .bottomLeading){
+        ZStack(){
             Color.principalLittleLemon
             VStack(alignment: .leading){
                 Text("Little Lemon")
@@ -43,15 +42,6 @@ struct LittleLemonMessageView: View {
                 
                 Spacer()
             }
-            Button{
-                isSearching.toggle()
-            }label: {
-                Image(systemName: "magnifyingglass.circle.fill")
-                    .resizable()
-                    .frame(width: 50, height: 50)
-                    .foregroundStyle(.text)
-            }
-            .padding()
         }
         .frame(maxWidth: .infinity)
         .frame(height: 300)
@@ -60,5 +50,5 @@ struct LittleLemonMessageView: View {
 }
 
 #Preview {
-    LittleLemonMessageView(isSearching: .constant(false))
+    LittleLemonMessageView()
 }
