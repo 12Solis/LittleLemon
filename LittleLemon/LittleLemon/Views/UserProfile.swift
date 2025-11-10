@@ -16,7 +16,53 @@ struct UserProfile: View {
     let email = UserDefaults.standard.string(forKey: kEmail) ?? "Email"
     
     var body: some View {
-        VStack(spacing:20) {
+        NavigationStack {
+            Form{
+                Text("Personal information")
+                    .font(.system(size: 24, weight: .semibold))
+                Section("Avatar"){
+                    HStack{
+                        /*ProfilePicView()
+                            .frame(width: 90)
+                            .padding(-15)
+                            .shadow(radius: 6)*/
+                        Button{
+                            
+                        }label: {
+                            Text("Change")
+                                .padding(10)
+                            background(
+                                RoundedRectangle(cornerRadius: 6)
+                                    .stroke(Color.gray, lineWidth: 1)
+                            )
+                                
+                        }
+                        .padding(20)
+                            
+                    }
+                }
+                    
+            }
+            .scrollContentBackground(.hidden)
+            .toolbar{
+                ToolbarItem(placement: .principal){
+                    Image("LittleLemonLogo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 60)
+                }
+                ToolbarItem(placement: .topBarTrailing){
+                    NavigationLink(destination: UserProfile()) {
+                        Image(systemName: "person.circle.fill")
+                            .resizable()
+                            .frame(width: 28, height: 28)
+                    }
+                }
+            }
+            
+            
+        }
+        /*VStack(spacing:20) {
             Spacer()
             Text("Personal Information")
                 .font(.title).bold()
@@ -40,6 +86,7 @@ struct UserProfile: View {
             }
             .padding()
         }
+        */
     }
 }
 
