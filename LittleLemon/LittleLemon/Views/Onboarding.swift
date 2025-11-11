@@ -139,7 +139,7 @@ struct Onboarding: View {
                 }
             }
             .navigationDestination(isPresented: $isLoggedIn) {
-                Menu()
+                Home()
             }
         }
     }
