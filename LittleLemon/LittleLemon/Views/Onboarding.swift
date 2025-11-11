@@ -12,6 +12,8 @@ let kFirstName = "first name key"
 let kLastName = "last name key"
 let kEmail = "email key"
 let kIsLoggedIn = "is logged in key"
+let kPhoneNumber = "phone number key"
+
 
 
 struct Onboarding: View {
@@ -19,6 +21,7 @@ struct Onboarding: View {
     @State private var firstName = ""
     @State private var lastName = ""
     @State private var email = ""
+    @State private var phoneNumber = ""
     @State private var isLoggedIn = false
     
     @State private var alertMessage = ""
@@ -27,27 +30,71 @@ struct Onboarding: View {
     var body: some View {
         NavigationStack {
             VStack{
+                                
+                LittleLemonMessageView()
                 
-                TextField("First Name:",text: $firstName)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocorrectionDisabled()
-                    .padding(.horizontal)
-                TextField("Last Name:",text: $lastName)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocorrectionDisabled()
-                    .padding(.horizontal)
-                TextField("Email:",text: $email)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(.none)
-                    .autocorrectionDisabled()
-                    .padding(.horizontal)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("First name*")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextField("Jhon", text: $firstName)
+                        .font(Font.system(size: 18, weight: .light))
+                        .foregroundStyle(.gray)
+                        .textFieldStyle(.roundedBorder)
+                }
+                .padding(5)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Last name*")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextField("Doe", text: $lastName)
+                        .font(Font.system(size: 18, weight: .light))
+                        .foregroundStyle(.gray)
+                        .textFieldStyle(.roundedBorder)
+                }
+                .padding(5)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Email*")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextField("jhon.doe@example", text: $email)
+                        .font(Font.system(size: 18, weight: .light))
+                        .foregroundStyle(.gray)
+                        .textFieldStyle(.roundedBorder)
+                        .autocorrectionDisabled()
+                        .autocapitalization(.none)
+                }
+                .padding(5)
+                
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Phone number*")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundStyle(.gray)
+                    
+                    TextField("xxx-xx-xxxx", text: $phoneNumber)
+                        .font(Font.system(size: 18, weight: .light))
+                        .foregroundStyle(.gray)
+                        .textFieldStyle(.roundedBorder)
+                        .keyboardType(.numberPad)
+                }
+                .padding(5)
                 
                 Button("Register"){
-                    if !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty {
+                    if !firstName.isEmpty && !lastName.isEmpty && !phoneNumber.isEmpty {
                         if isValidEmailFormat(email: email) {
                             UserDefaults.standard.set(firstName, forKey: kFirstName)
                             UserDefaults.standard.set(lastName, forKey: kLastName)
                             UserDefaults.standard.set(email, forKey: kEmail)
+                            UserDefaults.standard.set(phoneNumber, forKey: kPhoneNumber)
                             UserDefaults.standard.set(true, forKey: kIsLoggedIn)
                             
                             isLoggedIn = true
@@ -59,16 +106,29 @@ struct Onboarding: View {
                             
                         }
                         
+                    } else{
+                        alertMessage = "Please fill all the fields"
+                        showingAlert = true
                     }
                     
                     
                 }
                 .foregroundStyle(.white)
-                .padding(7)
+                .padding(10)
                 .background(Color.blue)
                 .clipShape(Capsule())
                 
                 
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar{
+                ToolbarItem(placement: .principal){
+                    Image("LittleLemonLogo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 60)
+                }
             }
             .alert(alertMessage, isPresented: $showingAlert){
                 
@@ -79,7 +139,7 @@ struct Onboarding: View {
                 }
             }
             .navigationDestination(isPresented: $isLoggedIn) {
-                Home()
+                Menu()
             }
         }
     }
